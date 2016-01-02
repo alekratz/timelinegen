@@ -1,0 +1,105 @@
+group 'edu.appstate.cs.dmtools.timeline'
+version '0.1-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.0.0-beta-3595'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/8.1.1/javafx.plugin'
+
+mainClassName = 'edu.appstate.cs.dmtools.timeline.MainKt'
+
+repositories {
+    mavenCentral()
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+dependencies {
+    //compile 'com.google.guava:guava:19.0'
+    compile 'org.freemarker:freemarker:2.3.23'
+    compile 'org.slf4j:slf4j-simple:1.7.13'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile 'junit:junit:4.11'
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+/*
+ * JavaFX settings
+ */
+javafx {
+    appID 'TimelineWindow'
+    appName 'Timeline Creator'
+    mainClass "$mainClassName"
+
+    //jvmArgs = []
+    //systemProperties = [ 'prism.disableRegionCaching':'true' ]
+    //arguments = ['-l', '--fast']
+
+    embedLauncher = false
+
+    // deploy/info attributes
+    //category = ''
+    copyright = 'Copyright (c) 2015 Aleksander Ratzloff'
+    description = 'This is a sample configuration, it is not real.'
+    licenseType = 'All Rights Reserved'
+    vendor = ''
+    //installSystemWide = true
+    //menu = true
+    //shortcut = true
+
+    // app icons
+    /*
+    icons {
+        shortcut = ['shortcut-16.png', 'shortcut-32.png', 'shortcut-128.png', 'shortcut-256.png', 'shortcut-16@2x.png', 'shortcut-32@2x.png', 'shortcut-128@2x.png']
+        volume = 'javafx-icon.png'
+        setup = 'javafx-icon.png'
+    }
+    */
+
+    width = 800
+    height = 600
+    embedJNLP = false
+    codebase = 'http://student.cs.appstate.edu/ratlzoffap'
+
+    // arbitrary jnlp icons
+    /*
+    icon {
+        href = 'src/main/resources/javafx-icon.png'
+        kind = 'splash'
+        width = 128
+        height = 128
+    }
+    icon {
+        href = 'shortcut-32@2x.png'
+        kind = 'selected'
+        width = 16
+        height = 16
+        scale = 1
+    }
+    */
+}
