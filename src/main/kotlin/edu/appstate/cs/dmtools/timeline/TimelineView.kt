@@ -56,8 +56,8 @@ class TimelineView : Region() {
 
     fun reloadView() {
         val model = HashMap<String, Any>()
-        model["css"] = javaClass.getResource("/css")
-        model["timeline"] = myTimeline.generateHTML()
+        model["css_dir"] = javaClass.getResource("/css")
+        model["timeline_text"] = myTimeline.generateHTML()
         //model["img"] = javaClass.getResource("/img")
 
         val content = HtmlLoader.getTemplatedHTML("timelineview.ftl", model)
