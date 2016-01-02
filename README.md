@@ -8,6 +8,7 @@ This is a prototype of a timeline creator, written in Kotlin using JavaFX. This 
 * [ ] Support editing of timeline items
 * [ ] Allow timeline templates to be loaded/saved as JSON
 * [ ] Try to clean up the code some, get rid of some of the hackier code
+* [ ] Support customizable event colors
 
 # License
 All Rights Reserved, until further notice (a permissive license will be chosen soon)
