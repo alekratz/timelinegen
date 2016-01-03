@@ -1,5 +1,6 @@
 package edu.appstate.cs.dmtools.timeline
 
+import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.text.Regex
 
@@ -19,6 +20,8 @@ data class TimelineEventField(val prompt: String, val inputType: InputType = Inp
  * @author Alek Ratzloff <alekratz@gmail.com>
  */
 object TimelineEventFactory {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     val templates = HashMap<String, TimelineEvent>()
 
     init {
@@ -52,14 +55,19 @@ object TimelineEventFactory {
 
     fun createNewEvent(eventType: String): TimelineEvent {
         val template = templates[eventType] as TimelineEvent
-        return template.clone() as TimelineEvent
+        logger.trace("Got template with ID $template")
+        val clone = template.clone() as TimelineEvent
+        logger.trace("Template clone ID: $clone")
+        return clone
     }
-    fun getTemplate(which: String): TimelineEvent = templates[which] as TimelineEvent
+    //fun getTemplate(which: String): TimelineEvent = templates[which] as TimelineEvent
 
     fun templateNames() = templates.keys.toTypedArray()
 }
 
 class TimelineEvent(val fields: LinkedHashMap<String, TimelineEventField>) : Cloneable {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     val title: String
         get() = formattedValue("title")!!
     val color: String
@@ -67,12 +75,14 @@ class TimelineEvent(val fields: LinkedHashMap<String, TimelineEventField>) : Clo
     val text: String
         get() = formattedValue("text")!!
     val year: Int
-        get() = get("year") as Int
+        get() = get("year")!! as Int
 
     public override fun clone(): Any {
         val clone = LinkedHashMap<String, TimelineEventField>()
-        for(k in fieldNames())
-            clone[k] = getField(k)!!.copy()
+        for(k in fieldNames()) {
+            val (prompt, inputType, value) = getField(k)!!
+            clone[k] = TimelineEventField(prompt, inputType, value)
+        }
         return TimelineEvent(clone)
     }
 

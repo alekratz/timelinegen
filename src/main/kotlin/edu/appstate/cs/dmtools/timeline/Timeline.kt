@@ -1,15 +1,19 @@
 package edu.appstate.cs.dmtools.timeline
 
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
  * @author Alek Ratzloff <alekratz@gmail.com>
  */
 class Timeline {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     val timeline = HashMap<Int, ArrayList<TimelineEvent>>()
 
     fun add(event: TimelineEvent) {
         val year = event.year
+        logger.debug("Adding event $event in year ${event["year"]}")
         timeline.putIfAbsent(year, arrayListOf<TimelineEvent>())
         timeline[year]!!.add(event)
     }
