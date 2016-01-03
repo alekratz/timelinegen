@@ -20,9 +20,10 @@ enum class InputType {
  * @param value the initial/default (and eventually final) value of this field.
  * @param clearOnCreate determines whether on creation of the event, this input should be cleared. This should be set to
  *                      false for any field that may be common among many events; for example, the time frame.
+ * @param required determines whether the field is optional to fill out, or is required.
  */
 data class TimelineEventField(val prompt: String, val inputType: InputType = InputType.NONE, var value: Any? = null,
-                              val clearOnCreate: Boolean = true)
+                              val clearOnCreate: Boolean = true, val required: Boolean = true)
 
 /**
  * @author Alek Ratzloff <alekratz@gmail.com>

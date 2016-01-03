@@ -17,7 +17,8 @@ class TimelineWindow : Application() {
 
         // Set up scene
         val scene = Scene(timelineView, 800.0, 600.0)
-        scene.stylesheets.add("css/browser.css")
+        scene.stylesheets.add("ui/browser.css")
+        scene.stylesheets.add("ui/validation.css")
         primaryStage.scene = scene
 
         primaryStage.show()

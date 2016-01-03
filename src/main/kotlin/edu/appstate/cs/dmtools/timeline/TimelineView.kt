@@ -3,6 +3,7 @@ package edu.appstate.cs.dmtools.timeline
 import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.geometry.HPos
+import javafx.geometry.Side
 import javafx.geometry.VPos
 import javafx.scene.control.*
 import javafx.scene.input.MouseButton
@@ -167,6 +168,8 @@ class TimelineView : Region() {
 
         fun isNullOrEmpty(s: String?) = (s == null || s == "")
         val toClear = HashSet<TextInputControl>()
+        val inputSuggestions = HashSet<TextInputControl>()
+        var success = true
 
         for(input in eventTemplateInput.children) {
             val fieldName = input.id
@@ -180,13 +183,27 @@ class TimelineView : Region() {
             }
 
             val fieldValue = fieldValueInput!!.text
-            if(isNullOrEmpty(fieldValue)) {
-                currentEvent[fieldName] = "" // for now just set it to an empty string
-                // TODO: tooltip if field is null or empty, or check to see if the field is optional(?)
+            if(currentEvent.getField(fieldName)!!.required && isNullOrEmpty(fieldValue)) {
+                inputSuggestions.add(fieldValueInput)
+                success = false
             } else if(currentEvent.getField(fieldName)!!.clearOnCreate) {
-                // Get add this to the set of items to clear out if, provided this is not null and has a field
-                toClear.add(fieldValueInput)
+                // Add this to the set of items to clear out, provided it's been filled out
+                if(!isNullOrEmpty(fieldValue))
+                    toClear.add(fieldValueInput)
             }
+        }
+
+        if(!success) {
+            for (input in inputSuggestions) {
+                val validator = ContextMenu()
+                val menuitem = MenuItem("This input is\nrequired")
+                menuitem.styleClass.add("menu-item-validation")
+                validator.styleClass.add("context-menu-validation")
+                validator.items.add(menuitem)
+                validator.isAutoHide = true
+                validator.show(input, Side.TOP, 0.0, 0.0)
+            }
+            return // don't actually do anything
         }
 
         // If the user adds multiple events of the same type, it won't change every event

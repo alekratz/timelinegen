@@ -1,0 +1,18 @@
+.context-menu-validation {
+    -fx-background-color: #006699;
+    -fx-text-fill: white;
+    -fx-padding: 0;
+}
+
+.context-menu-validation:hover {
+    -fx-background-color: #006699;
+    -fx-text-fill: white;
+}
+
+.menu-item-validation .label {
+    -fx-text-fill: white;
+}
+
+.menu-item-validation:focused .label {
+    -fx-text-fill: white;
+}
