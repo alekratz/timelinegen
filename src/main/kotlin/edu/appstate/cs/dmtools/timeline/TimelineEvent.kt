@@ -12,9 +12,17 @@ enum class InputType {
 }
 
 /**
- * This is the class that carries all of the metadata for the controls to be created, what type the value is, and any /actual/ value used
+ * This is the class that carries all of the metadata for the controls to be created, what type the value is, and any
+ * /actual/ value used
+ *
+ * @param prompt the prompt for the user to type something in.
+ * @param inputType the input type that is used. This helps to infer what value type this will be (Int or String).
+ * @param value the initial/default (and eventually final) value of this field.
+ * @param clearOnCreate determines whether on creation of the event, this input should be cleared. This should be set to
+ *                      false for any field that may be common among many events; for example, the time frame.
  */
-data class TimelineEventField(val prompt: String, val inputType: InputType = InputType.NONE, var value: Any? = null)
+data class TimelineEventField(val prompt: String, val inputType: InputType = InputType.NONE, var value: Any? = null,
+                              val clearOnCreate: Boolean = true)
 
 /**
  * @author Alek Ratzloff <alekratz@gmail.com>
@@ -80,8 +88,8 @@ class TimelineEvent(val fields: LinkedHashMap<String, TimelineEventField>) : Clo
     public override fun clone(): Any {
         val clone = LinkedHashMap<String, TimelineEventField>()
         for(k in fieldNames()) {
-            val (prompt, inputType, value) = getField(k)!!
-            clone[k] = TimelineEventField(prompt, inputType, value)
+            val (prompt, inputType, value, clearOnCreate) = getField(k)!!
+            clone[k] = TimelineEventField(prompt, inputType, value, clearOnCreate)
         }
         return TimelineEvent(clone)
     }

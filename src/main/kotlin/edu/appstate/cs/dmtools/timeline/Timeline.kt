@@ -11,14 +11,22 @@ class Timeline {
 
     val timeline = HashMap<Int, ArrayList<TimelineEvent>>()
 
-    fun add(event: TimelineEvent) {
+    /**
+     * Adds a timeline event to this timeline. Because events have their own assigned years, a year is not necessary to
+     * pass to this method.
+     * @param event the TimelineEvent to add to the timeline.
+     */
+    public fun add(event: TimelineEvent) {
         val year = event.year
         logger.debug("Adding event $event in year ${event["year"]}")
         timeline.putIfAbsent(year, arrayListOf<TimelineEvent>())
         timeline[year]!!.add(event)
     }
 
-    fun generateHTML(): String {
+    /**
+     * Generates the HTML representation for this timeline, specific to the CSS we're using.
+     */
+    public fun generateHTML(): String {
         var result: String = ""
         var leftRight = false // left = false, right = true
 

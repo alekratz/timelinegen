@@ -3,7 +3,6 @@ package edu.appstate.cs.dmtools.timeline
 import freemarker.template.Configuration
 import freemarker.template.TemplateExceptionHandler
 import java.io.StringWriter
-import java.net.URI
 
 /**
  * @author Alek Ratzloff <alekratz@gmail.com>

@@ -4,7 +4,6 @@ import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.geometry.HPos
 import javafx.geometry.VPos
-import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -18,6 +17,7 @@ import java.util.*
 
 /**
  * @author Alek Ratzloff <alekratz@gmail.com>
+ *     Provides an entire view and toolbar for a timeline editor. Pretty slick, eh?
  */
 class TimelineView : Region() {
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -32,6 +32,10 @@ class TimelineView : Region() {
     val myTimeline = Timeline()
     var currentEvent: TimelineEvent = TimelineEvent(LinkedHashMap()) // Set this to a non-null dummy value
 
+    /**
+     * Sets up a few style classes, as well as adds the layout of the entire UI for the timeline. It finally reloads the
+     * timeline's HTML browser view for the initial view.
+     */
     init {
         styleClass.add("browser")
 
@@ -54,23 +58,42 @@ class TimelineView : Region() {
         reloadView()
     }
 
-    fun reloadView() {
+    /**
+     * Reloads the view of the browser for the timeline. It also sets appropriate values that are used by the template
+     * engine for HTML rendering.
+     */
+    public fun reloadView() {
         val model = HashMap<String, Any>()
         model["css_dir"] = javaClass.getResource("/css")
         model["timeline_text"] = myTimeline.generateHTML()
         //model["img"] = javaClass.getResource("/img")
-
         val content = HtmlLoader.getTemplatedHTML("timelineview.ftl", model)
-
         webEngine.loadContent(content)
     }
 
+    ///////////////////////////////////////////////////////////////////////////////
+    // UI element events - this are more complicated than just a one-line lambda //
+    ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Updates the text of the given field of the current timeline event we're editing. These values are seen directly
+     * as Strings.
+     *
+     * @param sender the TextInputControl that raised the text input
+     */
     private fun onEventTextInput(sender: TextInputControl) {
         // Update the current template's values for this input
         currentEvent[sender.id] = sender.text
         logger.trace("$currentEvent ${sender.id} property changed to ${currentEvent[sender.id]}")
     }
 
+    /**
+     * Updates the integer value of the given field of the current timeline event we're editing. These values are seen
+     * as Ints. This is actually raised by the internal textbox <i>in</i> the spinner, so we want to look at its text
+     * property, instead of the spinner.value property.
+     *
+     * @param sender the Spinner control that raised the number input event
+     */
     private fun onEventNumberInput(sender: Spinner<*>) {
         val text = sender.editor.text
         try {
@@ -81,6 +104,12 @@ class TimelineView : Region() {
         }
     }
 
+    /**
+     * This is fired whenever the combobox of event types has a selection made. This creates all of the necessary inputs
+     * for the event for the user to fill out.
+     *
+     * @param new the index of the item selected.
+     */
     private fun onEventTemplateSelection(new: Number?) {
         val whichTemplate = TimelineEventFactory.templateNames()[new!!.toInt()]
         currentEvent = TimelineEventFactory.createNewEvent(whichTemplate)
@@ -125,47 +154,54 @@ class TimelineView : Region() {
         }
     }
 
+    /**
+     * When the new event button is clicked, this event is fired. It validates the user input, and if all is good, it
+     * sends the current event field we're editing to the actual timeline. It then renders the new view of the HTML
+     * control, and clears all of the non-number input boxes.
+     *
+     * @param event the mouse event of the button being clicked
+     */
     private fun onNewEventButtonClicked(event: MouseEvent) {
+        // Don't bother if it's not a left click
+        if(event.button != MouseButton.PRIMARY) return
+
         fun isNullOrEmpty(s: String?) = (s == null || s == "")
         val toClear = HashSet<TextInputControl>()
 
-        if(event.button == MouseButton.PRIMARY) {
-            for(input in eventTemplateInput.children) {
-                val fieldName = input.id
-                /*
-                 * TODO: figure out how to clear fields out. We have a few options.
-                 *      * clear everything out.
-                 *      * clear all fields except for number fields. the rationale being we don't want to clear out the "year" field
-                 *      * add a specific check for the "year" field - this is a special case.
-                 * For now, we do the second option - clear everything except for number fields.
-                 */
-                val fieldValue: String? = when(input) {
-                    is TextInputControl -> {
-                        toClear.add(input)
-                        input.text
-                    }
-                    is Spinner<*> -> input.editor.text
-                    else -> {
-                        logger.warn("Field $fieldName is not a recognizable input control")
-                        null
-                    }
-                }
-
-                if(isNullOrEmpty(fieldValue)) {
-                    currentEvent[fieldName] = "" // for now just set it to an empty string
-                    // TODO: tooltip if field is null or empty, or check to see if the field is optional(?)
+        for(input in eventTemplateInput.children) {
+            val fieldName = input.id
+            val fieldValueInput: TextInputControl? = when(input) {
+                is TextInputControl -> input
+                is Spinner<*> -> input.editor
+                else -> {
+                    logger.warn("Field $fieldName is not a recognizable input control")
+                    null
                 }
             }
 
-            // Add a clone of the actual current event to the timeline; if the user adds multiple events of the same
-            // type, it won't change every event
-            myTimeline.add(currentEvent.clone() as TimelineEvent)
-            reloadView()
-            // Clear all of the appropriate inputs out
-            toClear.forEach { t -> t.clear() }
+            val fieldValue = fieldValueInput!!.text
+            if(isNullOrEmpty(fieldValue)) {
+                currentEvent[fieldName] = "" // for now just set it to an empty string
+                // TODO: tooltip if field is null or empty, or check to see if the field is optional(?)
+            } else if(currentEvent.getField(fieldName)!!.clearOnCreate) {
+                // Get add this to the set of items to clear out if, provided this is not null and has a field
+                toClear.add(fieldValueInput)
+            }
         }
+
+        // If the user adds multiple events of the same type, it won't change every event
+        myTimeline.add(currentEvent.clone() as TimelineEvent)
+        reloadView()
+        toClear.forEach { t -> t.clear() }
     }
 
+    /////////////////////
+    // UI method hooks //
+    /////////////////////
+
+    /**
+     * When the form is resized, this hook is called. This just aligns the browser and the toolbar appropriately.
+     */
     override fun layoutChildren() {
         val w = width.toDouble()
         val h = height.toDouble()
