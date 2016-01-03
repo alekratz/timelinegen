@@ -197,8 +197,8 @@ class TimelineView : Region() {
             for (input in inputSuggestions) {
                 val validator = ContextMenu()
                 val menuitem = MenuItem("This input is\nrequired")
-                menuitem.styleClass.add("menu-item-validation")
-                validator.styleClass.add("context-menu-validation")
+                menuitem.styleClass.add("validation-menu-item")
+                validator.styleClass.add("validation-context-menu")
                 validator.items.add(menuitem)
                 validator.isAutoHide = true
                 validator.show(input, Side.TOP, 0.0, 0.0)
