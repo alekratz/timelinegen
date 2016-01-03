@@ -11,7 +11,7 @@ This is a prototype of a timeline creator, written in Kotlin using JavaFX. This 
 * [ ] Try to clean up the code some, get rid of some of the hackier code
 * [ ] Support customizable event colors
 * [ ] Support different age separation; these would be akin to our CE/BCE or AD/BC aging. Multitudes of ages are quite common in fantasy settings.
-* [ ] Good(!) documentation of the code and what it all does
+* [x] Good(!) documentation of the code and what it all does
 * [ ] Sharing UI values among different event templates; e.g. when moving from a "birth" template to a "death" template, the name in the box is preserved
 
 # License
