@@ -35,14 +35,14 @@ object TimelineEventFactory {
     init {
         val regularTemplate = linkedMapOf(
                 Pair("title", TimelineEventField("Title", InputType.TEXT_FIELD)),
-                Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER)),
+                Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER, 0, false)),
                 Pair("text", TimelineEventField("Description", InputType.TEXT_AREA)),
                 Pair("color", TimelineEventField("", InputType.NONE, "LightGray"))
         )
 
         val birthTemplate = linkedMapOf(
                 Pair("title", TimelineEventField("Title", InputType.NONE, "%name% was born")),
-                Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER)),
+                Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER, 0, false)),
                 Pair("name", TimelineEventField("Name", InputType.TEXT_FIELD)),
                 Pair("text", TimelineEventField("Description", InputType.TEXT_AREA)),
                 Pair("color", TimelineEventField("", InputType.NONE, "LightCyan"))
@@ -50,7 +50,7 @@ object TimelineEventFactory {
 
         val deathTemplate = linkedMapOf(
                 Pair("title", TimelineEventField("Title", InputType.NONE, "%name% died")),
-                Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER)),
+                Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER, 0, false)),
                 Pair("name", TimelineEventField("Name", InputType.TEXT_FIELD)),
                 Pair("text", TimelineEventField("Description", InputType.TEXT_AREA)),
                 Pair("color", TimelineEventField("", InputType.NONE, "LightPink"))
