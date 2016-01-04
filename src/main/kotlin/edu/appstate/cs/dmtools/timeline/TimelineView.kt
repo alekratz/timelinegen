@@ -56,8 +56,13 @@ class TimelineView : Region() {
         children.add(toolBar)
         children.add(browser)
 
+        updateCreateEventButton()
         reloadView()
     }
+
+    ////////////////////////////////////
+    // Utility methods and operations //
+    ////////////////////////////////////
 
     /**
      * Reloads the view of the browser for the timeline. It also sets appropriate values that are used by the template
@@ -70,6 +75,14 @@ class TimelineView : Region() {
         //model["img"] = javaClass.getResource("/img")
         val content = HtmlLoader.getTemplatedHTML("timelineview.ftl", model)
         webEngine.loadContent(content)
+    }
+
+    /**
+     * This ensures that the "create event button" in the class is enabled/disabled based on whether we have a timeline
+     * event that's being edited, ergo different field inputs being on screen already.
+     */
+    private fun updateCreateEventButton() {
+        newEventButton.isDisable = eventTemplateInput.children.size == 0
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -153,6 +166,7 @@ class TimelineView : Region() {
                 eventTemplateInput.children.add(addedControl)
             }
         }
+        updateCreateEventButton()
     }
 
     /**

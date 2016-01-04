@@ -2,7 +2,7 @@
 This is a prototype of a timeline creator, written in Kotlin using JavaFX. This README currently does not contain any useful information; I'm mostly using it as a TODO list.
 
 # TODO
-* [ ] Tie up loose ends in the UI where input is not checked
+* [x] Tie up loose ends in the UI where input is not checked
 * [x] Add error messages for input validation
 * [ ] Support editing/removal of timeline items
 * [ ] Allow timelines and templates to be loaded/saved as JSON
