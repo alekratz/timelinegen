@@ -11,6 +11,7 @@ This is a prototype of a timeline creator, written in Kotlin using JavaFX. This 
 * [x] Good(!) documentation of the code and what it all does
 * [ ] Sharing UI values among different event templates; e.g. when moving from a "birth" template to a "death" template, the name in the input box is preserved
 * [ ] Try to clean up the code some, get rid of some of the hackier code (a big cleanup will happen especially near the release)
+* [ ] Provide precompiled jar file of most recent passing build of the master branch
 
 # License
 All Rights Reserved, until further notice (a permissive license will be chosen soon)

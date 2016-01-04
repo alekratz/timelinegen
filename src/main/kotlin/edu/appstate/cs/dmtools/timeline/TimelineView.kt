@@ -134,27 +134,29 @@ class TimelineView : Region() {
         for (field in currentEvent.fieldNames()) {
             val eventField = currentEvent.getField(field)!!
             val addedControl = when (eventField.inputType) {
+                // TODO : remove the code duplication from the TEXT_FIELD and TEXT_AREA sections
                 InputType.TEXT_FIELD -> {
                     val textField = TextField()
                     textField.promptText = eventField.prompt
-                    if (eventField.value != null)
-                        textField.text = eventField.value as String
+                    // Update the current template's values for this input
+                    textField.text = eventField.value?.toString() ?: ""
                     textField.textProperty().addListener { o -> onEventTextInput(textField) }
                     textField
                 }
                 InputType.TEXT_AREA -> {
                     val textArea = TextArea()
                     textArea.promptText = eventField.prompt
-                    if (eventField.value != null)
-                        textArea.text = eventField.value as String
                     // Update the current template's values for this input
+                    textArea.text = eventField.value?.toString() ?: ""
                     textArea.textProperty().addListener { o -> onEventTextInput(textArea) }
                     textArea
                 }
                 InputType.NUMBER_SPINNER -> {
                     val spinner = Spinner<Int>(Int.MIN_VALUE, Int.MAX_VALUE, (eventField.value ?: 0) as Int)
+                    spinner.editor.promptText = eventField.prompt
                     spinner.isEditable = true
                     // Update the current template's values for this input
+                    spinner.editor.text = eventField.value?.toString() ?: ""
                     spinner.editor.textProperty().addListener { o -> onEventNumberInput(spinner as Spinner<*>) }
                     spinner
                 }
@@ -183,7 +185,6 @@ class TimelineView : Region() {
         fun isNullOrEmpty(s: String?) = (s == null || s == "")
         val toClear = HashSet<TextInputControl>()
         val inputSuggestions = HashSet<TextInputControl>()
-        var success = true
 
         for(input in eventTemplateInput.children) {
             val fieldName = input.id
@@ -199,7 +200,6 @@ class TimelineView : Region() {
             val fieldValue = fieldValueInput!!.text
             if(currentEvent.getField(fieldName)!!.required && isNullOrEmpty(fieldValue)) {
                 inputSuggestions.add(fieldValueInput)
-                success = false
             } else if(currentEvent.getField(fieldName)!!.clearOnCreate) {
                 // Add this to the set of items to clear out, provided it's been filled out
                 if(!isNullOrEmpty(fieldValue))
@@ -207,7 +207,7 @@ class TimelineView : Region() {
             }
         }
 
-        if(!success) {
+        if(inputSuggestions.size > 0) {
             for (input in inputSuggestions) {
                 val validator = ContextMenu()
                 val menuitem = MenuItem("This input is\nrequired")
@@ -217,7 +217,7 @@ class TimelineView : Region() {
                 validator.isAutoHide = true
                 validator.show(input, Side.TOP, 0.0, 0.0)
             }
-            return // don't actually do anything
+            return // don't actually do anything; this indicates a failure
         }
 
         // If the user adds multiple events of the same type, it won't change every event
