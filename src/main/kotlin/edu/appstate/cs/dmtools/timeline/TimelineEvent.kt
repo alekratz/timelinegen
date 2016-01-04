@@ -37,7 +37,7 @@ object TimelineEventFactory {
         val regularTemplate = linkedMapOf(
                 Pair("title", TimelineEventField("Title", InputType.TEXT_FIELD)),
                 Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER, 0, false)),
-                Pair("text", TimelineEventField("Description", InputType.TEXT_AREA)),
+                Pair("text", TimelineEventField("Description", InputType.TEXT_AREA, required = false)),
                 Pair("color", TimelineEventField("", InputType.NONE, "LightGray"))
         )
 
@@ -45,7 +45,7 @@ object TimelineEventFactory {
                 Pair("title", TimelineEventField("Title", InputType.NONE, "%name% was born")),
                 Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER, 0, false)),
                 Pair("name", TimelineEventField("Name", InputType.TEXT_FIELD)),
-                Pair("text", TimelineEventField("Description", InputType.TEXT_AREA)),
+                Pair("text", TimelineEventField("Description", InputType.TEXT_AREA, required = false)),
                 Pair("color", TimelineEventField("", InputType.NONE, "LightCyan"))
         )
 
@@ -53,7 +53,7 @@ object TimelineEventFactory {
                 Pair("title", TimelineEventField("Title", InputType.NONE, "%name% died")),
                 Pair("year", TimelineEventField("Year", InputType.NUMBER_SPINNER, 0, false)),
                 Pair("name", TimelineEventField("Name", InputType.TEXT_FIELD)),
-                Pair("text", TimelineEventField("Description", InputType.TEXT_AREA)),
+                Pair("text", TimelineEventField("Description", InputType.TEXT_AREA, required = false)),
                 Pair("color", TimelineEventField("", InputType.NONE, "LightPink"))
         )
 

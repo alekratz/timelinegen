@@ -126,6 +126,7 @@ class TimelineView : Region() {
      */
     private fun onEventTemplateSelection(new: Number?) {
         val whichTemplate = TimelineEventFactory.templateNames()[new!!.toInt()]
+        logger.debug("Template selected: $whichTemplate")
         currentEvent = TimelineEventFactory.createNewEvent(whichTemplate)
         logger.trace("New current event: $currentEvent")
 
